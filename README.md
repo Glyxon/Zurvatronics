@@ -14,7 +14,7 @@ This repository contains the computational simulations and analytical models (Wo
 <div align="center">
   <h2>⚡ Interactive Simulation</h2>
   <p>Observe the Catch-Bond disassembly and the Thermodynamic Wedge in real-time.</p>
-  <a href="https://[YOUR-USER].github.io/Glyxon-Zurvatronica/interactive_sim/">
+  <a href="https://Glyxon.github.io/Glyxon-Zurvatronica/interactive_sim/">
     <img src="https://img.shields.io/badge/-START_SIMULATION-121212?style=for-the-badge&logo=matrix&logoColor=2ECC71" alt="Start Simulation">
   </a>
   <p><i>Visualizing the transition of phase and the Zurvān Gap directly in your browser.</i></p>
