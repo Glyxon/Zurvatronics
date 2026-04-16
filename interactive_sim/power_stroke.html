@@ -1,1 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zurvatronic Power Stroke Dynamics</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #121212; color: #ffffff; padding: 20px; }
+        .container { max-width: 1000px; margin: auto; }
+        .header { text-align: center; border-bottom: 1px solid #333; padding-bottom: 10px; margin-bottom: 20px; }
+        .dashboard { display: flex; gap: 20px; flex-wrap: wrap; }
+        .controls { flex: 1; background: #1e1e1e; padding: 20px; border-radius: 8px; min-width: 300px; }
+        .visualization { flex: 2; background: #1e1e1e; padding: 20px; border-radius: 8px; }
+        .slider-container { margin-bottom: 20px; }
+        .slider-container label { display: block; font-weight: bold; margin-bottom: 5px; color: #4DA8DA; }
+        input[type=range] { width: 100%; cursor: pointer; }
+        .value-display { font-size: 1.2em; float: right; font-weight: normal; color: #fff; }
+        .explanation { font-size: 0.9em; color: #aaa; margin-top: 15px; padding-top: 15px; border-top: 1px dashed #444; }
+        canvas { max-height: 250px; margin-bottom: 20px; }
+        .nav-link { display: inline-block; margin-bottom: 15px; color: #2ECC71; text-decoration: none; font-weight: bold; }
+        .nav-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
 
+<div class="container">
+    <a href="index.html" class="nav-link">← Back to Population Phase Simulator</a>
+    
+    <div class="header">
+        <h1>Micro-Mechanics: Stick-Slip & Power Stroke</h1>
+        <p>Real-time stochastic integration of a single MotAB stator (Euler-Maruyama)</p>
+    </div>
+
+    <div class="dashboard">
+        <div class="controls">
+            <h3>System Parameters</h3>
+            <div class="slider-container">
+                <label>Critical Threshold (Zc) <span class="value-display" id="valZc">1.20</span></label>
+                <input type="range" id="sliderZc" min="0.5" max="2.0" step="0.05" value="1.2">
+                <small>Structural limit before informational collapse.</small>
+            </div>
+            <div class="slider-container">
+                <label>Thermal Noise (T) <span class="value-display" id="valTemp">298 K</span></label>
+                <input type="range" id="sliderTemp" min="150" max="450" step="1" value="298">
+                <small>Temperature driving the Brownian fluctuations.</small>
+            </div>
+            
+            <div style="margin-top:20px; padding: 15px; background: #111; border-left: 4px solid #4DA8DA;">
+                <h4 style="margin:0 0 10px 0;">Live Integration Data</h4>
+                <p style="margin:5px 0; font-size:0.9em;">PMF Force: 6.0e-17 N</p>
+                <p style="margin:5px 0; font-size:0.9em;">IDR Stiffness: 4.0e-17 N/m</p>
+            </div>
+
+            <div class="explanation">
+                <strong>Zurvatronic Interpretation:</strong><br>
+                During the "Stick" phase, the velocity drops as the system restricts its own movement to accumulate structural tension (Z). 
+                When Z hits the Zc threshold, the informational anchor collapses, releasing the stored energy as a sharp velocity spike (The Power Stroke).
+            </div>
+        </div>
+
+        <div class="visualization">
+            <h3 style="margin-top:0; color:#E74C3C;">Structural Tension (Z) - <i>The Accumulation</i></h3>
+            <canvas id="tensionChart"></canvas>
+            
+            <h3 style="color:#4DA8DA;">Instantaneous Velocity - <i>The Power Stroke</i></h3>
+            <canvas id="velocityChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<script>
+    // BIOPHYSICAL CONSTANTS
+    const kB = 1.380649e-23;
+    const xiR = 1.0e-21;
+    const dt = 5e-6;
+    const FPMF = 6.0e-17;
+    const kappa = 4.0e-17;
+    const ZgrowthRate = 120.0;
+
+    // STATE VARIABLES
+    let Zcurrent = 0.0;
+    
+    // UI ELEMENTS
+    const sliderZc = document.getElementById('sliderZc');
+    const sliderTemp = document.getElementById('sliderTemp');
+    const valZc = document.getElementById('valZc');
+    const valTemp = document.getElementById('valTemp');
+
+    // CHART SETUP (Ring buffers for time-series)
+    const MAX_POINTS = 150;
+    const timeLabels = new Array(MAX_POINTS).fill('');
+    const zData = new Array(MAX_POINTS).fill(0);
+    const vData = new Array(MAX_POINTS).fill(0);
+
+    const ctxZ = document.getElementById('tensionChart').getContext('2d');
+    const chartZ = new Chart(ctxZ, {
+        type: 'line',
+        data: {
+            labels: timeLabels,
+            datasets: [{
+                label: 'Tension (Z)',
+                data: zData,
+                borderColor: '#E74C3C',
+                borderWidth: 2,
+                pointRadius: 0,
+                tension: 0.1
+            }]
+        },
+        options: {
+            responsive: true, animation: false,
+            scales: { y: { min: 0, max: 2.2, grid: { color: '#333' } }, x: { display: false } },
+            plugins: { legend: { display: false } }
+        }
+    });
+
+    const ctxV = document.getElementById('velocityChart').getContext('2d');
+    const chartV = new Chart(ctxV, {
+        type: 'line',
+        data: {
+            labels: timeLabels,
+            datasets: [{
+                label: 'Velocity',
+                data: vData,
+                borderColor: '#4DA8DA',
+                borderWidth: 2,
+                pointRadius: 0,
+                tension: 0.1
+            }]
+        },
+        options: {
+            responsive: true, animation: false,
+            scales: { y: { min: 0, max: 70000, grid: { color: '#333' } }, x: { display: false } },
+            plugins: { legend: { display: false } }
+        }
+    });
+
+    // Box-Muller Transform for Gaussian Noise
+    function randomGaussian() {
+        let u = 1 - Math.random();
+        let v = Math.random();
+        return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+    }
+
+    // MAIN INTEGRATION LOOP
+    function runSimulationStep() {
+        let Zc = parseFloat(sliderZc.value);
+        let T = parseFloat(sliderTemp.value);
+        
+        valZc.innerText = Zc.toFixed(2);
+        valTemp.innerText = T + ' K';
+
+        // Run multiple micro-steps per visual frame to speed up the plotting
+        let stepsPerFrame = 50;
+        let lastV = 0;
+
+        for(let i=0; i<stepsPerFrame; i++) {
+            // 1. Stick Phase (Accumulation)
+            Zcurrent += ZgrowthRate * dt;
+
+            // Optional: Thermal noise prematurely breaking the bond (Turnover simulation)
+            // If T is very high, probability of breaking before Zc increases
+            let thermalBreak = (T > 350 && Math.random() < 0.001 * (T/300));
+
+            // 2. Slip Phase (Collapse)
+            if (Zcurrent >= Zc || thermalBreak) {
+                Zcurrent = 0.0;
+            }
+
+            // 3. Kinematics
+            let PsiZ = kappa * Zcurrent;
+            let driftVelocity = (FPMF - PsiZ) / xiR;
+            let noise = Math.sqrt((2 * kB * T / xiR) * dt) * randomGaussian();
+            
+            lastV = driftVelocity + noise;
+        }
+
+        // Shift arrays and push new data
+        zData.shift();
+        zData.push(Zcurrent);
+        
+        vData.shift();
+        vData.push(Math.max(0, lastV)); // Floor at 0 for visual clarity of the spike
+
+        chartZ.update();
+        chartV.update();
+    }
+
+    // Run loop at ~30 FPS
+    setInterval(runSimulationStep, 33);
+
+</script>
+
+</body>
+</html>
