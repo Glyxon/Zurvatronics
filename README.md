@@ -7,62 +7,52 @@
 
 [![ALIFE](https://img.shields.io/badge/ALIFE-2026-blue.svg)](https://alife.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Glyxon Biolabs](https://img.shields.io/badge/Lab-Glyxon_Biolabs-black.svg)]()
-
-> *"Life does not compute to move; it computes to persist."*
-
-This repository contains the computational simulations and analytical models supporting the **Theory of Zurvatronics**, as presented in the ALIFE 2026 manuscript: *"Biomolecules as Thermodynamic Computers, Subtractive Ontology and the Informational Collapse"*.
 
 ---
 
 <div align="center">
-  <h2>⚡ Interactive Simulation</h2>
-  <p>Observe the Catch-Bond disassembly and the Thermodynamic Wedge in real-time.</p>
-  <a href="https://glyxon.github.io/Zurvatronics/interactive_sim/">
-    <img src="https://img.shields.io/badge/-START_SIMULATION-121212?style=for-the-badge&logo=matrix&logoColor=2ECC71" alt="Start Simulation">
-  </a>
-  <p><i>Visualizing the phase transition and the Zurvān Gap directly in your browser.</i></p>
+  <h2>🎮 Interactive Simulations</h2>
+  <p>Explore the transition from population-level phase diagrams to single-stator micro-mechanics.</p>
+  
+  <table>
+    <tr>
+      <td align="center">
+        <strong>1. Population Collapse (Zurvān Gap)</strong><br>
+        <a href="https://glyxon.github.io/Zurvatronics/interactive_sim/">
+          <img src="https://img.shields.io/badge/-START_PHASE_SIM-121212?style=for-the-badge&logo=matrix&logoColor=2ECC71" alt="Phase Sim">
+        </a>
+      </td>
+      <td align="center">
+        <strong>2. Micro-Mechanics (Power Stroke)</strong><br>
+        <a href="https://glyxon.github.io/Zurvatronics/interactive_sim/power_stroke.html">
+          <img src="https://img.shields.io/badge/-START_POWER_STROKE-121212?style=for-the-badge&logo=matrix&logoColor=4DA8DA" alt="Power Stroke Sim">
+        </a>
+      </td>
+    </tr>
+  </table>
 </div>
 
 ---
 
 ## 👁️ The Subtractive Agency Manifesto
-Traditional bioenergetic models treat biological agency as an additive process. Zurvatronics proposes an inhibitory framework: directionality (and thus, life) emerges from the **systematic subtraction of informational entropy**—the topological "pruning" of non-functional stochastic trajectories. 
+Zurvatronics proposes an inhibitory framework: directionality emerges from the **systematic subtraction of informational entropy**. Molecular machines do not compute to move; they compute to persist. 
 
-The macroscopic work (rotation) is the byproduct of the system's continuous effort to avoid thermodynamic collapse.
+## 🧮 Theoretical Core: The Zurvān Gap
+The MotAB stator is modeled as an informational filter. The **Zurvān Gap** is the temperature-dependent window where the "Thermodynamic Wedge" (the margin between Catch-Bond stability and thermal noise) collapses.
 
-## 🧮 Theoretical Core: The Zurvān Gap & The "Knee"
-The code in this repository models the *Pseudomonas putida* MotAB stator as a noise-driven informational filter (a Hysteresis Latch). 
-
-### The Thermodynamic Wedge
-The stability of the motor is dictated by the "Thermodynamic Wedge"—the energy gap between the Catch-Bond anchoring strength and the ambient thermal noise ($k_B T$). As rotational speed increases, the wedge narrows. 
-
-### Resolving the Torque-Speed "Knee"
-Zurvatronics identifies the torque-speed "knee" not as a kinetic limitation, but as the **Critical Threshold ($Z_c$)**. 
-* **$Z > Z_c$**: The wedge is thick; 11 stators remain anchored (The Plateau).
-* **$Z < Z_c$**: The wedge collapses; informational filtering fails, leading to an abrupt population-level disassembly.
-
-We term the temperature-dependent shift of this collapse the **Zurvān Gap**: a predictive window where thermal noise overrides the Catch-Bond at specific frequencies.
+## ⚙️ Micro-Mechanics: Stick-Slip & Power Stroke
+While the Phase Diagram shows population stability, the Java-based **Stick-Slip model** describes the lifecycle of a single stator:
+* **The Stick Phase ($Z \uparrow$):** Structural tension accumulates as the stator "prunes" stochastic paths, restricting rotor speed to store potential information.
+* **The Slip Phase ($Z \ge Z_c$):** Upon reaching the critical threshold, the informational anchor collapses, triggering an instantaneous release of energy—the **Power Stroke**.
 
 ## 📂 Repository Architecture
-
-* `/interactive_sim/`
-  * `index.html`: Web-based JS simulator (The Motor Wheel & Dynamic Wedge).
-* `/src/mathematica/`
-  * `Zurvan_Phase_Diagram.nb`: Analytical calculation of Swineshead's *Latitudo* (Figure A).
-  * `Population_Disassembly.nb`: Sigmoidal Catch-Bond transition (Figure B).
-* `/src/python_ports/`
-  * `zurvan_gap_sim.py`: NumPy implementation of the assembly equations.
-* `/docs/`
-  * `Castillo-Cornejo_ALIFE2026-FINAL.pdf`: Manuscript draft and theoretical derivations.
-
-## 🚀 Usage & Reproducibility
-1. **Interactive:** Access the simulation via GitHub Pages link above.
-2. **Mathematica:** Open `.nb` files in Wolfram Mathematica (v12+).
-3. **Parameters:** Models are calibrated for *P. putida* ($T_0 = 260\text{ K}$, $N_{max} = 11$, cold-collapse at $81.9\text{ Hz}$).
+* `/interactive_sim/`: JS-based visualizers for Phase Transitions and Power Stroke dynamics.
+* `/src/java_models/`: `PowerStrokeSim.java` - High-performance Euler-Maruyama integrator for single-stator kinetics.
+* `/src/mathematica/`: Analytical notebooks for the *Latitudo formarum* and Figures A/B.
+* `/docs/`: `Castillo-Cornejo_ALIFE2026-FINAL.pdf` - Full theoretical manuscript.
 
 ## 🔬 Experimental Challenge
-We challenge the experimental community to test these postulates. Measure the stator turnover rate ($k_{off}$) exactly at the macroscopic torque knee using FRAP or T-Jump IR-lasers. You will witness the geometric collapse of the Thermodynamic Wedge.
+We challenge the community to measure the stator turnover rate ($k_{off}$) at the macroscopic torque "knee". The predicted synchronization between $Z$ collapse and velocity spikes provides a falsifiable signature of Subtractive Agency.
 
 ---
 *Maintained by Glyxon Biolabs - Independent Research & Frugal Science.*
