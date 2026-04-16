@@ -1,4 +1,4 @@
-# Glyxon-Zurvatronica ⚙️🧬
+# Glyxon-Zurvatronics ⚙️🧬
 **Analytical Models of Subtractive Ontology and Informational Collapse in Molecular Motors**
 
 **Author:** David J. Castillo-Cornejo (2026)  
