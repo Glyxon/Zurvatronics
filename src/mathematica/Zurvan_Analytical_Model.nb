@@ -1,1 +1,93 @@
+(* ==================================================================== *)
+(* ZURVATRONICS: ANALYTICAL MODEL & PHASE TRANSITION *)
+(* Author: David J. Castillo-Cornejo (Glyxon Biolabs) *)
+(* ==================================================================== *)
 
+(* 1. THERMODYNAMIC PARAMETERS *)
+kB = 1.380649*10^-23;
+Hmax = 2.0; (* Maximum informational bits *)
+T0 = 260.0; (* Conformational temperature scale from paper *)
+
+(* 2. THEORETICAL FUNCTIONS *)
+(* Filtering Precision FP(T) *)
+FP[T_] := Hmax*Exp[-(T/T0)^2];
+
+(* Swineshead Latitudo L(T) *)
+Latitudo[T_] := kB*T*Log[2]*FP[T];
+
+(* Accumulated Action Z as a function of rotational speed w (Hz) *)
+(* Note: tau_res is inversely proportional to w *)
+Z[w_, T_] := Latitudo[T]/w;
+
+(* 3. CALIBRATION TO MANUSCRIPT PREDICTIONS *)
+(* We lock the critical threshold Zc so that 277K collapses exactly at 81.9 Hz *)
+wCollapseCold = 81.9;
+Zc = Z[wCollapseCold, 277.0];
+
+(* Automatically calculate the other collapse speeds to draw vertical lines *)
+wC290 = w /. FindRoot[Z[w, 290.0] == Zc, {w, 75.0}]; (* Predicts ~76.9 Hz *)
+wC303 = w /. FindRoot[Z[w, 303.0] == Zc, {w, 70.0}]; (* Predicts ~71.7 Hz *)
+
+(* 4. SIGMOIDAL ASSEMBLY PROBABILITY *)
+(* Alpha calibrated to create a sharp but biological transition around Zc *)
+alpha = 40.0/Zc;
+Passembly[w_, T_] := 1/(1 + Exp[-alpha*(Z[w, T] - Zc)]);
+
+(* Population-level stator count (max 11 units) *)
+Nstators[w_, T_] := 11.0*Passembly[w, T];
+
+(* ==================================================================== *)
+(* FIGURE A: PHASE DIAGRAM (Z vs. Speed) *)
+(* ==================================================================== *)
+figA = Plot[{Z[w, 277.0], Z[w, 290.0], Z[w, 303.0]}, {w, 40, 110}, 
+   PlotTheme -> "Scientific", 
+   PlotStyle -> {
+     Directive[Thickness[0.005], RGBColor[0.2, 0.4, 0.8]], (* 277 K Blue *)
+     Directive[Thickness[0.005], Dashed, RGBColor[0.3, 0.6, 0.3]], (* 290 K Green Dashed *)
+     Directive[Thickness[0.005], RGBColor[0.8, 0.2, 0.2]] (* 303 K Red *)
+   }, 
+   PlotRange -> {{40, 110}, {0.8*Zc, 1.8*Zc}}, 
+   (* Cyan Shaded Region for Zurvan Gap *)
+   Prolog -> {Directive[Opacity[0.15], Cyan], Rectangle[{wC303, 0}, {wCollapseCold, 2*Zc}]}, 
+   (* Horizontal Zc line and Vertical Collapse lines *)
+   Epilog -> {
+     Directive[Thick, Dashed, GrayLevel[0.4]], Line[{{40, Zc}, {110, Zc}}], 
+     Directive[Dotted, RGBColor[0.8, 0.2, 0.2]], Line[{{wC303, 0}, {wC303, Zc}}], 
+     Directive[Dotted, RGBColor[0.3, 0.6, 0.3]], Line[{{wC290, 0}, {wC290, Zc}}], 
+     Directive[Dotted, RGBColor[0.2, 0.4, 0.8]], Line[{{wCollapseCold, 0}, {wCollapseCold, Zc}}], 
+     Text[Style["\!\(\*SubscriptBox[\(Z\), \(c\)]\) Threshold", 12, Background -> White], {100, Zc*1.05}]
+   }, 
+   Frame -> True, 
+   FrameLabel -> {Style["Rotational Speed \[Omega] (Hz)", 14, FontFamily -> "Times"], 
+                  Style["Accumulated Action Z (J\[CenterDot]s)", 14, FontFamily -> "Times"]}, 
+   PlotLegends -> Placed[LineLegend[{"277 K", "290 K", "303 K"}, LegendLayout -> "Row"], {0.5, 0.9}], 
+   ImageSize -> 550, 
+   BaseStyle -> {FontFamily -> "Times", FontSize -> 12}
+];
+
+(* ==================================================================== *)
+(* FIGURE B: POPULATION DISASSEMBLY (Stator Count vs. Speed) *)
+(* ==================================================================== *)
+figB = Plot[{Nstators[w, 277.0], Nstators[w, 290.0], Nstators[w, 303.0]}, {w, 40, 110}, 
+   PlotTheme -> "Scientific", 
+   PlotStyle -> {
+     Directive[Thickness[0.005], RGBColor[0.2, 0.4, 0.8]], 
+     Directive[Thickness[0.005], Dashed, RGBColor[0.3, 0.6, 0.3]], 
+     Directive[Thickness[0.005], RGBColor[0.8, 0.2, 0.2]]
+   }, 
+   PlotRange -> {{40, 110}, {0, 11.5}}, 
+   (* Orange Shaded Region for Operational Zurvan Gap *)
+   Prolog -> {Directive[Opacity[0.15], Orange], Rectangle[{wC303, 0}, {wCollapseCold, 12}]}, 
+   Frame -> True, 
+   FrameLabel -> {Style["Rotational Speed \[Omega] (Hz)", 14, FontFamily -> "Times"], 
+                  Style["Active Stator Units (N)", 14, FontFamily -> "Times"]}, 
+   PlotLegends -> Placed[LineLegend[{"277 K", "290 K", "303 K"}, LegendLayout -> "Row"], {0.25, 0.2}], 
+   ImageSize -> 550, 
+   BaseStyle -> {FontFamily -> "Times", FontSize -> 12}
+];
+
+(* Render both figures *)
+Column[{
+  Style["Figure A: Phase Diagram", 16, Bold, FontFamily -> "Times"], figA, 
+  Style["Figure B: Population Disassembly", 16, Bold, FontFamily -> "Times"], figB
+}, Alignment -> Center, Spacings -> 2]
