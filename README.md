@@ -75,5 +75,34 @@ This mathematical framework provides a predictive resolution to the conflicting 
 ## 🔬 Experimental Challenge
 We challenge the community to measure the stator turnover rate ($k_{off}$) at the macroscopic torque "knee". The predicted synchronization between $Z$ collapse and velocity spikes provides a falsifiable signature of Subtractive Agency.
 
+## ⏳ Philosophical Context: Why "Zurvatronics"?
+The nomenclature of this framework is derived from **Zurvanism**, an extinct branch of Zoroastrianism that posited *Zurvān* (Infinite Time) as the primordial creator. In this mythology, light (order) and darkness (chaos) do not exist independently; they are subsequent bifurcations born from the passage of time.
+
+This philosophical lens perfectly mirrors the subtractive ontology of molecular motors: 
+Biological agency is not a "vital spark" injected into matter. Instead, the motor (the agent) uses its physical structure to "buy time" ($\tau_{res}$), filtering out thermal chaos to allow directional order to emerge. The **Zurvān Coefficient ($Z$)** is literally the mathematical measurement of how much "time" a system has successfully converted into informational order before collapsing into entropy.
+
+---
+
+## 🗺️ The Zurvatronic Roadmap: Future Extensions
+The current framework establishes the baseline for the *Pseudomonas putida* MotAB stator. However, the theoretical implications of Subtractive Agency point toward a much broader research program. Glyxon Biolabs is currently exploring three progressively ambitious extensions:
+
+### 1. Zurvatronic Taxonomy of Molecular Machines
+If every molecular motor possesses a characteristic Critical Threshold ($Z_c$) and a minimum required residence time ($\tau_{min}$), we can build a new classification system based on informational parameters rather than structural families. 
+* **High $Z_c$ Regimes:** Classical, highly stable, deterministic motors.
+* **Near $Z_c$ Regimes:** Sensitive, adaptive machines hovering on the edge of informational collapse (e.g., the flagellar motor at zero-load).
+* **Synthetic Application:** Designing artificial nanomotors not by copying structural blueprints, but by targeting specific $Z_c$ thermodynamic regimes.
+
+### 2. Thermodynamic Theory of Agency Emergence (Abiogenesis)
+How does agency emerge from non-agency? Under the Zurvatronic lens, the transition from complex chemistry to biological life is the exact moment a molecular topology accumulates sufficient action ($Z$) to cross its $Z_c$ threshold, becoming self-stabilizing. Life does not merely "explore" the adjacent possible; it *earns access to it* by computing against its own decoherence. This provides a falsifiable, mathematical mechanism for the origin of life.
+
+### 3. Hierarchical Zurvatronics & Cognition (The Deepest Extension)
+The logic of Subtractive Agency scales. If agency at the molecular level is the suppression of decoherent conformational states (Zurvatronics), then agency at the cognitive level is the suppression of decoherent representational states—which aligns perfectly with Karl Friston’s **Free Energy Principle** and predictive coding. 
+
+We propose that the Swineshead Latitudo and the $Z$ coefficient can be generalized across all levels of biological organization—from proton transit in a stator channel, to action potential generation in a neuron, to predictive inference in a cortical circuit. 
+> *A molecular machine does not compute in order to move; it computes to persist. Similarly, a brain does not compute in order to perceive; it computes to persist as a coherent self-model against the entropic noise of reality.*
+
+---
+*Maintained by Glyxon Biolabs - "Frugal Science for Subtractive Ontology."*
+
 ---
 *Maintained by Glyxon Biolabs - Independent Research & Frugal Science.*
